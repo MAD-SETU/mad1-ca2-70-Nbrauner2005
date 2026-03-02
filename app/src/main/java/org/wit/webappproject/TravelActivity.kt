@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import timber.log.Timber
+import timber.log.Timber.Forest.i
 import timber.log.Timber.i
 
 class TravelActivity : AppCompatActivity() {
