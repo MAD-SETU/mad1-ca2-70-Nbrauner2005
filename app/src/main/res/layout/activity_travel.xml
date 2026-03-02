@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Layout for the screen where users can add a new destination and view there already saved destinations -->
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,6 +13,8 @@
     android:padding="16dp"
     tools:context=".TravelActivity">
 
+<!-- ScrollView wraps the form to allow scrolling on smaller screens,
+     Ensures content is scrollable when keyboard is visible-->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -18,12 +23,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+<!-- Used as the content container inside scrollView -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
+<!-- ImageView for displaying the destination image,
+     Fixed size for a consistent UI -->
             <ImageView
                 android:id="@+id/destinationImage"
                 android:layout_width="140dp"
@@ -33,6 +41,7 @@
                 android:src="@drawable/world_icon"
                 android:contentDescription="Destination Image" />
 
+<!-- EditText for destination name input -->
             <EditText
                 android:id="@+id/destinationName"
                 android:layout_width="match_parent"
@@ -46,6 +55,7 @@
                 android:maxLines="1"
                 android:inputType="text" />
 
+<!-- Multi-line EditText for destination description, -->
             <EditText
                 android:id="@+id/destinationDescription"
                 android:layout_width="match_parent"
@@ -60,6 +70,8 @@
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical" />
 
+<!-- RatingBar for the user to rate the destination -->
+            <!-- numStars and stepSize define the rating scale -->
             <RatingBar
                 android:id="@+id/destinationRating"
                 android:layout_width="wrap_content"
@@ -70,6 +82,7 @@
                 android:rating="0"
                 android:isIndicator="false" />
 
+<!-- Multi-line EditText for destination activities -->
             <EditText
                 android:id="@+id/destinationActivities"
                 android:layout_width="match_parent"
@@ -84,6 +97,7 @@
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical" />
 
+<!-- Button to submit the destination form -->
             <Button
                 android:id="@+id/btnAddDestination"
                 android:layout_width="match_parent"
