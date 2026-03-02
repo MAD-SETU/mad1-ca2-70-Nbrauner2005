@@ -10,7 +10,6 @@
     android:padding="16dp"
     tools:context=".TravelActivity">
 
-    <!-- Scrollable container -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -25,7 +24,6 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <!-- Optional top image -->
             <ImageView
                 android:id="@+id/destinationImage"
                 android:layout_width="140dp"
@@ -35,7 +33,6 @@
                 android:src="@drawable/world_icon"
                 android:contentDescription="Destination Image" />
 
-            <!-- Destination Name -->
             <EditText
                 android:id="@+id/destinationName"
                 android:layout_width="match_parent"
@@ -49,7 +46,6 @@
                 android:maxLines="1"
                 android:inputType="text" />
 
-            <!-- Short Description -->
             <EditText
                 android:id="@+id/destinationDescription"
                 android:layout_width="match_parent"
@@ -64,7 +60,30 @@
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical" />
 
-            <!-- Add Destination Button -->
+            <RatingBar
+                android:id="@+id/destinationRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:numStars="5"
+                android:stepSize="1"
+                android:rating="0"
+                android:isIndicator="false" />
+
+            <EditText
+                android:id="@+id/destinationActivities"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="12dp"
+                android:hint="Things to do here"
+                android:padding="8dp"
+                android:textColor="@color/textPrimary"
+                android:textSize="14sp"
+                android:backgroundTint="@color/colorPrimary"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical" />
+
             <Button
                 android:id="@+id/btnAddDestination"
                 android:layout_width="match_parent"
