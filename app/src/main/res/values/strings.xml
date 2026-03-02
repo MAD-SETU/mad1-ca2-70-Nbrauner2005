@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">WebAppProject</string>
+    <string name="window_text">Press the button below to recieve a freindly greeting from android</string>
+    <string name="button_label">Show Greeting</string>
+    <string name="greeting_text">Greetings from your all in one travel app</string>
 </resources>
