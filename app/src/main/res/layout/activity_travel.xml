@@ -97,6 +97,47 @@
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical" />
 
+<!-- Date Arrived Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Arrived"
+                android:textColor="@color/textPrimary"
+                android:layout_marginTop="16dp" />
+
+<!-- Date Arrived input which opens the calendar -->
+            <EditText
+                android:id="@+id/dateArrived"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Select arrival date"
+                android:focusable="false"
+                android:clickable="true"
+                android:padding="8dp"
+                android:textColor="@color/textPrimary"
+                android:backgroundTint="@color/colorPrimary" />
+
+<!-- Date left label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Left"
+                android:textColor="@color/textPrimary"
+                android:layout_marginTop="12dp" />
+
+<!-- Date left input , opens the calendar -->
+            <EditText
+                android:id="@+id/dateLeft"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Select departure date"
+                android:focusable="false"
+                android:clickable="true"
+                android:padding="8dp"
+                android:textColor="@color/textPrimary"
+                android:backgroundTint="@color/colorPrimary" />
+
+
 <!-- Button to submit the destination form -->
             <Button
                 android:id="@+id/btnAddDestination"
