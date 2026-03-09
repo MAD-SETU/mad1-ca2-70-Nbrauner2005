@@ -17,10 +17,14 @@ import java.util.Calendar
 // Screen where users add destinations and see them in a list
 class TravelActivity : AppCompatActivity() {
 
+    // ArrayList used to temporarily store destinations added by the user
+    // This data is kept in memory and passed to another activity when viewing the list
     private val destinations = ArrayList<DestinationModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Links this activity to the activity_travel.xml layout
         setContentView(R.layout.activity_travel)
 
         Timber.plant(Timber.DebugTree())
@@ -40,7 +44,14 @@ class TravelActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.destinationList)
 
+        // RecyclerView is used instead of ListView because it is more efficient for
+        // displaying dynamic lists of data. It reuses view items as the user scrolls,
+        // which improves performance when handling larger datasets.
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // The Adapter acts as a bridge between the destination data and the RecyclerView UI.
+        // It takes the list of DestinationModel objects and binds each item to a card layout
+        // so it can be displayed in the list.
         val adapter = DestinationAdapter(destinations)
         recyclerView.adapter = adapter
 
@@ -74,16 +85,20 @@ class TravelActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // Open the list screen
+        // Intent is used to navigate from TravelActivity to DestinationListActivity.
+        // The list of destinations is passed using Parcelable so the data can be transferred
+        // between activities
         viewButton.setOnClickListener {
             val intent = Intent(this, DestinationListActivity::class.java)
             intent.putParcelableArrayListExtra("userDestinations", destinations)
             startActivity(intent)
         }
 
-        // Add destination button
+        // When the user pressed the Add Destination button
         addButton.setOnClickListener {
 
+
+            // Read the values entered by the user
             val name = nameInput.text.toString().trim()
             val description = descriptionInput.text.toString().trim()
             val activities = activitiesInput.text.toString().trim()
@@ -91,11 +106,13 @@ class TravelActivity : AppCompatActivity() {
             val arrived = dateArrived.text.toString()
             val left = dateLeft.text.toString()
 
+            // Validate that the destination name is not empty
             if (name.isEmpty()) {
                 Toast.makeText(this, "Please enter a destination name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Create a new DestinationModel object with the user input
             val destination = DestinationModel(
                 name,
                 description,
@@ -105,8 +122,11 @@ class TravelActivity : AppCompatActivity() {
                 left
             )
 
+            // Add the destination to the list
             destinations.add(destination)
 
+            // Notify RecyclerView that the data has changed so it refreshes
+            // the displayed list and shows the newly added destination.
             adapter.notifyDataSetChanged()
 
             Timber.i("Name: $name")
