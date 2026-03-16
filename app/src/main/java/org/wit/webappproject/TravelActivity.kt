@@ -1,21 +1,20 @@
-
 package org.wit.webappproject
 
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import org.wit.webappproject.databinding.ActivityTravelBinding
 import timber.log.Timber
 import java.util.Calendar
 
 // Screen where users add destinations and see them in a list
 class TravelActivity : AppCompatActivity() {
+
+    // ViewBinding object used instead of findViewById
+    private lateinit var binding: ActivityTravelBinding
 
     // ArrayList used to temporarily store destinations added by the user
     // This data is kept in memory and passed to another activity when viewing the list
@@ -24,45 +23,25 @@ class TravelActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Links this activity to the activity_travel.xml layout
-        setContentView(R.layout.activity_travel)
+        // Inflate the layout using ViewBinding
+        binding = ActivityTravelBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         Timber.plant(Timber.DebugTree())
         Timber.i("TravelActivity started")
 
-        val addButton = findViewById<Button>(R.id.btnAddDestination)
-        val viewButton = findViewById<Button>(R.id.btnViewDestinations)
-
-        val nameInput = findViewById<EditText>(R.id.destinationName)
-        val descriptionInput = findViewById<EditText>(R.id.destinationDescription)
-        val activitiesInput = findViewById<EditText>(R.id.destinationActivities)
-
-        val ratingBar = findViewById<RatingBar>(R.id.destinationRating)
-
-        val dateArrived = findViewById<EditText>(R.id.dateArrived)
-        val dateLeft = findViewById<EditText>(R.id.dateLeft)
-
-        val recyclerView = findViewById<RecyclerView>(R.id.destinationList)
-
-        // RecyclerView is used instead of ListView because it is more efficient for
-        // displaying dynamic lists of data. It reuses view items as the user scrolls,
-        // which improves performance when handling larger datasets.
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // The Adapter acts as a bridge between the destination data and the RecyclerView UI.
-        // It takes the list of DestinationModel objects and binds each item to a card layout
-        // so it can be displayed in the list.
+        binding.destinationList.layoutManager = LinearLayoutManager(this)
         val adapter = DestinationAdapter(destinations)
-        recyclerView.adapter = adapter
+        binding.destinationList.adapter = adapter
 
         val calendar = Calendar.getInstance()
 
         // Arrival Date Picker
-        dateArrived.setOnClickListener {
+        binding.dateArrived.setOnClickListener {
             val datePicker = DatePickerDialog(
                 this,
                 { _, year, month, day ->
-                    dateArrived.setText("$day/${month + 1}/$year")
+                    binding.dateArrived.setText("$day/${month + 1}/$year")
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -72,11 +51,11 @@ class TravelActivity : AppCompatActivity() {
         }
 
         // Departure Date Picker
-        dateLeft.setOnClickListener {
+        binding.dateLeft.setOnClickListener {
             val datePicker = DatePickerDialog(
                 this,
                 { _, year, month, day ->
-                    dateLeft.setText("$day/${month + 1}/$year")
+                    binding.dateLeft.setText("$day/${month + 1}/$year")
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -85,34 +64,28 @@ class TravelActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // Intent is used to navigate from TravelActivity to DestinationListActivity.
-        // The list of destinations is passed using Parcelable so the data can be transferred
-        // between activities
-        viewButton.setOnClickListener {
+        //Open the list screen
+        binding.btnViewDestinations.setOnClickListener {
             val intent = Intent(this, DestinationListActivity::class.java)
             intent.putParcelableArrayListExtra("userDestinations", destinations)
             startActivity(intent)
         }
 
-        // When the user pressed the Add Destination button
-        addButton.setOnClickListener {
+        // Add destination button
+        binding.btnAddDestination.setOnClickListener {
+            val name = binding.destinationName.text.toString().trim()
+            val description = binding.destinationDescription.text.toString().trim()
+            val activities = binding.destinationActivities.text.toString().trim()
+            val rating = binding.destinationRating.rating
+            val arrived = binding.dateArrived.text.toString()
+            val left = binding.dateLeft.text.toString()
 
-
-            // Read the values entered by the user
-            val name = nameInput.text.toString().trim()
-            val description = descriptionInput.text.toString().trim()
-            val activities = activitiesInput.text.toString().trim()
-            val rating = ratingBar.rating
-            val arrived = dateArrived.text.toString()
-            val left = dateLeft.text.toString()
-
-            // Validate that the destination name is not empty
-            if (name.isEmpty()) {
+            // Validate the name field
+            if(name.isEmpty()) {
                 Toast.makeText(this, "Please enter a destination name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Create a new DestinationModel object with the user input
             val destination = DestinationModel(
                 name,
                 description,
@@ -122,27 +95,18 @@ class TravelActivity : AppCompatActivity() {
                 left
             )
 
-            // Add the destination to the list
             destinations.add(destination)
 
-            // Notify RecyclerView that the data has changed so it refreshes
-            // the displayed list and shows the newly added destination.
             adapter.notifyDataSetChanged()
 
-            Timber.i("Name: $name")
-            Timber.i("Description: $description")
-            Timber.i("Activities: $activities")
-            Timber.i("Rating: $rating")
-            Timber.i("Arrived: $arrived")
-            Timber.i("Left: $left")
             Timber.i("Destination added: $destination")
 
-            nameInput.text.clear()
-            descriptionInput.text.clear()
-            activitiesInput.text.clear()
-            ratingBar.rating = 0f
-            dateArrived.text.clear()
-            dateLeft.text.clear()
+            binding.destinationName.text.clear()
+            binding.destinationDescription.text.clear()
+            binding.destinationActivities.text.clear()
+            binding.destinationRating.rating = 0f
+            binding.dateArrived.text.clear()
+            binding.dateLeft.text.clear()
 
             Toast.makeText(this, "$name added", Toast.LENGTH_SHORT).show()
         }
