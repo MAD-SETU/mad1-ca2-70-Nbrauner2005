@@ -2,8 +2,10 @@ package org.wit.webappproject
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.webappproject.databinding.ActivityTravelBinding
@@ -13,12 +15,22 @@ import java.util.Calendar
 // Screen where users add destinations and see them in a list
 class TravelActivity : AppCompatActivity() {
 
+    private var imageUri: Uri? = null
+
     // ViewBinding object used instead of findViewById
     private lateinit var binding: ActivityTravelBinding
 
     // ArrayList used to temporarily store destinations added by the user
     // This data is kept in memory and passed to another activity when viewing the list
     private val destinations = ArrayList<DestinationModel>()
+
+    private val imagePicker =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                imageUri = it
+                binding.destinationPhoto.setImageURI(it)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +74,10 @@ class TravelActivity : AppCompatActivity() {
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
             datePicker.show()
+        }
+
+        binding.btnAddImage.setOnClickListener {
+            showImagePicker()
         }
 
         //Open the list screen
@@ -110,6 +126,10 @@ class TravelActivity : AppCompatActivity() {
 
             Toast.makeText(this, "$name added", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showImagePicker() {
+        imagePicker.launch("image/*")
     }
 }
 

@@ -12,7 +12,8 @@ data class DestinationModel(
     val activities: String = "",
     val rating: Float = 0f,
     val dateArrived: String = "",
-    val dateLeft: String = ""
+    val dateLeft: String = "",
+    var image: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
