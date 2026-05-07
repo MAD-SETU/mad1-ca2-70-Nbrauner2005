@@ -1,5 +1,48 @@
 package org.wit.webappproject
 
+/*
+ * References:
+ *
+ * Android Activity Lifecycle:
+ * https://developer.android.com/guide/components/activities/activity-lifecycle
+ *
+ * Activity Result API:
+ * https://developer.android.com/training/basics/intents/result
+ *
+ * RecyclerView Documentation:
+ * https://developer.android.com/guide/topics/ui/layout/recyclerview
+ *
+ * RecyclerView LayoutManager:
+ * https://developer.android.com/reference/androidx/recyclerview/widget/LinearLayoutManager
+ *
+ * ViewBinding Documentation:
+ * https://developer.android.com/topic/libraries/view-binding
+ *
+ * Google Maps Android SDK:
+ * https://developers.google.com/maps/documentation/android-sdk
+ *
+ * Google Maps Marker Documentation:
+ * https://developers.google.com/android/reference/com/google/android/gms/maps/model/MarkerOptions
+ *
+ * Gson JSON Serialization Library:
+ * https://github.com/google/gson
+ *
+ * Android Internal Storage:
+ * https://developer.android.com/training/data-storage/app-specific
+ *
+ * Material Design Components:
+ * https://m3.material.io/
+ *
+ * DatePickerDialog Documentation:
+ * https://developer.android.com/reference/android/app/DatePickerDialog
+ *
+ * Android Intents:
+ * https://developer.android.com/reference/android/content/Intent
+ *
+ * Timber Logging Library:
+ * https://github.com/JakeWharton/timber
+ */
+
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
@@ -14,23 +57,32 @@ import org.wit.webappproject.databinding.ActivityTravelBinding
 import timber.log.Timber
 import java.util.Calendar
 
+// Main activity responsible for managing the travel journal user interface and destination CRUD operations.
 class TravelActivity : AppCompatActivity() {
 
+    // Stores the currently selected image URI chosen from the device gallery.
     private var selectedImageUri: Uri? = null
 
+    // Stores selected map coordinates returned from MapActivity
     private var selectedLocation = Location()
 
+    // ViewBinding reference used instead of findViewById for safer UI access.
     private lateinit var binding: ActivityTravelBinding
 
+    // Main in-memory list of all saved destinations.
     private val destinations = ArrayList<DestinationModel>()
 
+    // RecyclerView adapter responsible for rendering destination cards.
     private lateinit var adapter: DestinationAdapter
 
+    // JSON file used for local persistence
     private val JSON_FILE = "destinations.json"
 
+    // // Gson library used for object serialization.
     private val gson = Gson()
 
-    // IMAGE PICKER
+    // Activity result launcher used to select destination images from device storage.
+    // OpenDocument() implementation based on Android activity result API documentation : https://developer.android.com/training/basics/intents/result
     private val imagePicker =
         registerForActivityResult(
             ActivityResultContracts.OpenDocument()
@@ -38,6 +90,7 @@ class TravelActivity : AppCompatActivity() {
 
             uri?.let {
 
+                // Persist image permissions so selected images remain accessible after app restarts.
                 contentResolver.takePersistableUriPermission(
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -49,7 +102,7 @@ class TravelActivity : AppCompatActivity() {
             }
         }
 
-    // MAP RESULT
+    // Receives selected map coordinates from MapActivity using the Activity
     private val mapLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -106,12 +159,27 @@ class TravelActivity : AppCompatActivity() {
         binding.destinationList.layoutManager =
             LinearLayoutManager(this)
 
-        // ADAPTER
+        binding.btnViewMap.setOnClickListener {
+
+            val intent = Intent(
+                this,
+                AllDestinationsMapActivity::class.java
+            )
+
+            intent.putParcelableArrayListExtra(
+                "destinations",
+                destinations
+            )
+
+            startActivity(intent)
+        }
+
+        // RecyclerView adapter handling: destination display, delete functionality, edit functionality, map navigation
         adapter = DestinationAdapter(
 
             destinations,
 
-            // DELETE
+            // Removes destination from the list, updates JSON storage and refreshes UI
             { position ->
 
                 destinations.removeAt(position)
@@ -127,7 +195,7 @@ class TravelActivity : AppCompatActivity() {
                 ).show()
             },
 
-            // EDIT
+            // Populates form fields with an existing destination allowing users to edit and resave updated information
             { position ->
 
                 val destination = destinations[position]
@@ -191,7 +259,7 @@ class TravelActivity : AppCompatActivity() {
             // SHOW EDIT BUTTON
             true,
 
-            // OPEN SAVED MAP
+            // Opens Google Maps screen displaying the saved location of the destination
             { position ->
 
                 val destination =
@@ -218,7 +286,7 @@ class TravelActivity : AppCompatActivity() {
 
         val calendar = Calendar.getInstance()
 
-        // ARRIVAL DATE
+        // Displays DatePickerDialog allowing users to select arrival date
         binding.dateArrived.setOnClickListener {
 
             val datePicker = DatePickerDialog(
@@ -294,7 +362,7 @@ class TravelActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // ADD DESTINATION
+        // Validates user input, creates a new DestinationModel object and persists the destination to local JSON storage.
         binding.btnAddDestination.setOnClickListener {
 
             val name =
@@ -400,7 +468,7 @@ class TravelActivity : AppCompatActivity() {
         imagePicker.launch(arrayOf("image/*"))
     }
 
-    // SAVE JSON
+    // Serializes all destination objects into JSON and writes them into internal device storage
     private fun saveDestinations() {
 
         val type =
@@ -416,7 +484,7 @@ class TravelActivity : AppCompatActivity() {
         Timber.i("Destinations saved")
     }
 
-    // LOAD JSON
+    // Reads saved JSON data from internal storage, converts JSON back into DestinationModel objects and restores the destination list.
     private fun loadDestinations() {
 
         try {

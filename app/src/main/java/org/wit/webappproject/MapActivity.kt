@@ -1,5 +1,33 @@
 package org.wit.webappproject
 
+/*
+* References:
+*
+* Google Maps Android SDK:
+* https://developers.google.com/maps/documentation/android-sdk
+*
+* GoogleMap Documentation:
+* https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap
+*
+* SupportMapFragment Documentation:
+* https://developers.google.com/android/reference/com/google/android/gms/maps/SupportMapFragment
+*
+* LatLng Documentation:
+* https://developers.google.com/android/reference/com/google/android/gms/maps/model/LatLng
+*
+* MarkerOptions Documentation:
+* https://developers.google.com/android/reference/com/google/android/gms/maps/model/MarkerOptions
+*
+* CameraUpdateFactory Documentation:
+* https://developers.google.com/android/reference/com/google/android/gms/maps/CameraUpdateFactory
+*
+* Android Intent Documentation:
+* https://developer.android.com/reference/android/content/Intent
+*
+* Activity Result API:
+* https://developer.android.com/training/basics/intents/result
+*/
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -11,23 +39,29 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.wit.webappproject.databinding.ActivityMapBinding
 
+// Activity responsible for displaying Google Maps, viewing saved locations and selecting new coordinates.
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    // Google Map object reference
     private lateinit var mMap: GoogleMap
 
+    // ViewBinding reference for accessing XML layout views.
     private lateinit var binding: ActivityMapBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
+        // Inflate XML layout using ViewBinding. // https://developer.android.com/topic/libraries/view-binding
         binding = ActivityMapBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
+        // Retrieve Google Maps fragment from layout.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
 
+        // Asynchronously prepare Google Map.
         mapFragment.getMapAsync(this)
     }
 
@@ -35,26 +69,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap = googleMap
 
+        // Enable built in Google Maps controls for improved user interaction.
         mMap.uiSettings.isZoomControlsEnabled = true
 
         mMap.uiSettings.isCompassEnabled = true
 
         mMap.uiSettings.isMapToolbarEnabled = true
 
-        // CHECK IF USER IS SELECTING LOCATION
+        // Determine whether Activity was opened for location selection or viewing only
         val selectingLocation =
             intent.getBooleanExtra(
                 "selecting",
                 false
             )
 
-        // GET SAVED LOCATION
+        // Retrieve saved destination location passed through Intent extras.
         val location =
             if (
                 android.os.Build.VERSION.SDK_INT >=
                 android.os.Build.VERSION_CODES.TIRAMISU
             ) {
 
+                // Android 13+ Serializable implementation.
                 intent.getSerializableExtra(
                     "location",
                     Location::class.java
@@ -62,6 +98,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             } else {
 
+                // Backwards compatibility for older android versions
                 @Suppress("DEPRECATION")
 
                 intent.getSerializableExtra(
@@ -70,17 +107,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     ?: Location(53.3498, -6.2603, 6f)
             }
 
+        // Convert custom location object into Google Maps LatLng coordinates
         val destinationLatLng =
             LatLng(location.lat, location.lng)
 
-        // SHOW SAVED MARKER
+        // Move camera to destination location
         mMap.addMarker(
             MarkerOptions()
                 .position(destinationLatLng)
                 .title("Saved Destination")
         )
 
-        // MOVE CAMERA
+        // Move camera to destination location
         mMap.moveCamera(
             CameraUpdateFactory.newLatLngZoom(
                 destinationLatLng,
@@ -88,25 +126,29 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         )
 
-        // ONLY ALLOW LOCATION SELECTION
-        // WHEN OPENED FROM SET LOCATION BUTTON
+        // Allow location selection only when opened from "Set Location" button.
         if (selectingLocation) {
 
+            // Google Maps click listener. https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap.OnMapClickListener
             mMap.setOnMapClickListener { latLng ->
 
+                // Remove previous markers
                 mMap.clear()
 
+                // Add marker at selected location.
                 mMap.addMarker(
                     MarkerOptions()
                         .position(latLng)
                 )
 
+                // Create new location object using selected coordinates.
                 val newLocation = Location(
                     latLng.latitude,
                     latLng.longitude,
                     mMap.cameraPosition.zoom
                 )
 
+                //Return selected location back to TravelActivity
                 val resultIntent = Intent()
 
                 resultIntent.putExtra(
@@ -119,6 +161,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     resultIntent
                 )
 
+                // Close MapActivity and return result.
                 finish()
             }
         }

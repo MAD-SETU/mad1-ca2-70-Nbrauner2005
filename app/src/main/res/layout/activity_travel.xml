@@ -197,6 +197,14 @@
             android:text="View Saved Destinations"
             app:cornerRadius="18dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="View All Destinations On Map"
+            app:cornerRadius="18dp" />
+
         <!-- RECYCLERVIEW -->
 
         <androidx.recyclerview.widget.RecyclerView

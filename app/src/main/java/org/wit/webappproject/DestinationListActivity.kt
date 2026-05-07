@@ -1,5 +1,28 @@
 package org.wit.webappproject
 
+/*
+* References:
+*
+* RecyclerView Documentation:
+* https://developer.android.com/guide/topics/ui/layout/recyclerview
+*
+* RecyclerView LayoutManager:
+* https://developer.android.com/reference/androidx/recyclerview/widget/LinearLayoutManager
+*
+* Android Intent Documentation:
+* https://developer.android.com/reference/android/content/Intent
+*
+* Activity Navigation:
+* https://developer.android.com/guide/components/activities/intro-activities
+*
+* ViewBinding Documentation:
+* https://developer.android.com/topic/libraries/view-binding
+*
+* Google Maps SDK:
+* https://developers.google.com/maps/documentation/android-sdk
+*/
+
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
