@@ -70,23 +70,78 @@ class TravelActivity : AppCompatActivity() {
         binding.destinationList.layoutManager =
             LinearLayoutManager(this)
 
-        adapter = DestinationAdapter(destinations) { position ->
+        adapter = DestinationAdapter(
 
-            // Remove destination
-            destinations.removeAt(position)
+            destinations,
 
-            // Save updated list
-            saveDestinations()
+            // DELETE
+            { position ->
 
-            // Refresh RecyclerView
-            adapter.notifyItemRemoved(position)
+                destinations.removeAt(position)
 
-            Toast.makeText(
-                this,
-                "Destination deleted",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+                saveDestinations()
+
+                adapter.notifyItemRemoved(position)
+
+                Toast.makeText(
+                    this,
+                    "Destination deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+
+            // EDIT
+            { position ->
+
+                val destination = destinations[position]
+
+                // Fill form fields
+                binding.destinationName.setText(destination.name)
+
+                binding.destinationDescription.setText(
+                    destination.description
+                )
+
+                binding.destinationActivities.setText(
+                    destination.activities
+                )
+
+                binding.destinationRating.rating =
+                    destination.rating
+
+                binding.dateArrived.setText(
+                    destination.dateArrived
+                )
+
+                binding.dateLeft.setText(
+                    destination.dateLeft
+                )
+
+                // Restore image
+                if (destination.imageUri.isNotEmpty()) {
+
+                    selectedImageUri =
+                        Uri.parse(destination.imageUri)
+
+                    binding.destinationPhoto.setImageURI(
+                        selectedImageUri
+                    )
+                }
+
+                // Remove old item temporarily
+                destinations.removeAt(position)
+
+                saveDestinations()
+
+                adapter.notifyItemRemoved(position)
+
+                Toast.makeText(
+                    this,
+                    "Edit the destination and press Add Destination to save changes",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        )
 
         binding.destinationList.adapter = adapter
 

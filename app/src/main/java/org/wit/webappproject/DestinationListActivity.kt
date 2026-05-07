@@ -1,4 +1,3 @@
-
 package org.wit.webappproject
 
 import android.os.Bundle
@@ -17,32 +16,54 @@ class DestinationListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Inflate layout using ViewBinding
         binding = ActivityDestinationListBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
         // Toolbar back button
         binding.topToolbar.setNavigationOnClickListener {
+
             finish()
         }
 
         // RecyclerView setup
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(this)
 
         // Receive destinations from TravelActivity
         val userDestinations =
-            intent.getParcelableArrayListExtra<DestinationModel>("userDestinations")
+            intent.getParcelableArrayListExtra<DestinationModel>(
+                "userDestinations"
+            )
 
+        // Add received destinations to list
         if (userDestinations != null) {
+
             destinations.addAll(userDestinations)
         }
 
         // Attach adapter
         binding.recyclerView.adapter =
-            DestinationAdapter(destinations) { position ->
 
-                destinations.removeAt(position)
+            DestinationAdapter(
 
-                binding.recyclerView.adapter?.notifyItemRemoved(position)
-            }
+                destinations,
+
+                // Delete functionality
+                { position ->
+
+                    destinations.removeAt(position)
+
+                    binding.recyclerView.adapter
+                        ?.notifyItemRemoved(position)
+                },
+
+                // Empty edit callback
+                {},
+
+                // Hide edit button on this screen
+                false
+            )
     }
 }

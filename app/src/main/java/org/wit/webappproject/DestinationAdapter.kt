@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 class DestinationAdapter(
     private val destinations: MutableList<DestinationModel>,
-    private val onDeleteClick: (Int) -> Unit
+    private val onDeleteClick: (Int) -> Unit,
+    private val onEditClick: (Int) -> Unit,
+    private val showEditButton: Boolean = true
 ) : RecyclerView.Adapter<DestinationAdapter.MainHolder>() {
 
     class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,6 +29,9 @@ class DestinationAdapter(
 
         val btnDelete: Button =
             itemView.findViewById(R.id.btnDelete)
+
+        val btnEdit: Button =
+            itemView.findViewById(R.id.btnEdit)
     }
 
     override fun onCreateViewHolder(
@@ -67,10 +72,25 @@ class DestinationAdapter(
             )
         }
 
-        // Delete button click
+        // Delete button
         holder.btnDelete.setOnClickListener {
 
             onDeleteClick(position)
+        }
+
+        // Edit button visibility
+        if (showEditButton) {
+
+            holder.btnEdit.visibility = View.VISIBLE
+
+            holder.btnEdit.setOnClickListener {
+
+                onEditClick(position)
+            }
+
+        } else {
+
+            holder.btnEdit.visibility = View.GONE
         }
     }
 }
