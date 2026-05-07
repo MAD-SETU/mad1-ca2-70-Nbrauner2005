@@ -13,7 +13,7 @@ data class DestinationModel(
     val rating: Float = 0f,
     val dateArrived: String = "",
     val dateLeft: String = "",
-    var image: String = ""
+    var imageUri: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -32,6 +32,8 @@ data class DestinationModel(
         parcel.writeFloat(rating)
         parcel.writeString(dateArrived)
         parcel.writeString(dateLeft)
+        parcel.writeString(imageUri)
+        parcel.readString() ?: ""
     }
 
     override fun describeContents(): Int = 0

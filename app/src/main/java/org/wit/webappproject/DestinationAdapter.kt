@@ -33,8 +33,8 @@ class DestinationAdapter(private val destinations: List<DestinationModel>) :
         holder.cardName.text = destination.name
         holder.cardDescription.text = destination.description
 
-        if (destination.image.isNotEmpty()) {
-            holder.cardImage.setImageURI(Uri.parse(destination.image))
+        if (destination.imageUri.isNotEmpty()) {
+            holder.cardImage.setImageURI(Uri.parse(destination.imageUri))
         }
     }
 }

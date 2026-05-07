@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
     <style name="Base.Theme.WebAppProject" parent="Theme.Material3.DayNight.NoActionBar">
 
@@ -17,7 +18,14 @@
 
         <item name="android:textColorPrimary">@color/textPrimary</item>
         <item name="android:textColorSecondary">@color/colorPrimaryDark</item>
+
     </style>
 
     <style name="Theme.WebAppProject" parent="Base.Theme.WebAppProject" />
+
+    <style name="roundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>

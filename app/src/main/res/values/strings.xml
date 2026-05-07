@@ -3,4 +3,5 @@
     <string name="window_text">Press the button below to recieve a freindly greeting from our app</string>
     <string name="button_label">Show Greeting</string>
     <string name="greeting_text">Greetings from your all in one travel app, are you ready to explore the world?</string>
+    <string name="select_destination_image">Select a destination image</string>
 </resources>

@@ -3,19 +3,22 @@ package org.wit.webappproject
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
+import android.provider.MediaStore
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.webappproject.databinding.ActivityTravelBinding
 import timber.log.Timber
+import timber.log.Timber.Forest.i
 import java.util.Calendar
 
 // Screen where users add destinations and see them in a list
 class TravelActivity : AppCompatActivity() {
 
-    private var imageUri: Uri? = null
+    private var selectedImageUri: Uri? = null
 
     // ViewBinding object used instead of findViewById
     private lateinit var binding: ActivityTravelBinding
@@ -27,10 +30,12 @@ class TravelActivity : AppCompatActivity() {
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                imageUri = it
+                selectedImageUri = it
                 binding.destinationPhoto.setImageURI(it)
             }
         }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +92,10 @@ class TravelActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //binding.chooseImage.setOnClickListener {
+            //showImagePicker(imageIntentLauncher)
+        //}
+
         // Add destination button
         binding.btnAddDestination.setOnClickListener {
             val name = binding.destinationName.text.toString().trim()
@@ -108,7 +117,8 @@ class TravelActivity : AppCompatActivity() {
                 activities,
                 rating,
                 arrived,
-                left
+                left,
+                selectedImageUri?.toString() ?: ""
             )
 
             destinations.add(destination)
@@ -123,6 +133,9 @@ class TravelActivity : AppCompatActivity() {
             binding.destinationRating.rating = 0f
             binding.dateArrived.text.clear()
             binding.dateLeft.text.clear()
+
+            selectedImageUri = null
+            binding.destinationPhoto.setImageResource(R.drawable.world_icon)
 
             Toast.makeText(this, "$name added", Toast.LENGTH_SHORT).show()
         }

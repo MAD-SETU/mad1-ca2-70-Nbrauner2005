@@ -1,3 +1,4 @@
+
 package org.wit.webappproject
 
 import android.os.Bundle
@@ -10,7 +11,7 @@ class DestinationListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDestinationListBinding
 
-    // Mutable list that will store destinations removed from TravelActivity
+    // Mutable list storing destinations received from TravelActivity
     private val destinations = mutableListOf<DestinationModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +20,15 @@ class DestinationListActivity : AppCompatActivity() {
         binding = ActivityDestinationListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Toolbar back button
+        binding.topToolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        // RecyclerView setup
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Receive destinations from TravelActivity
         val userDestinations =
             intent.getParcelableArrayListExtra<DestinationModel>("userDestinations")
 
@@ -28,7 +36,7 @@ class DestinationListActivity : AppCompatActivity() {
             destinations.addAll(userDestinations)
         }
 
+        // Attach adapter
         binding.recyclerView.adapter = DestinationAdapter(destinations)
-
     }
 }
