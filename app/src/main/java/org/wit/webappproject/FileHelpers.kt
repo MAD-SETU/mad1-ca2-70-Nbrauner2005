@@ -1,0 +1,55 @@
+package org.wit.webappproject
+
+import android.content.Context
+import timber.log.Timber
+import java.io.*
+
+fun write(context: Context, fileName: String, data: String) {
+    try {
+        val outputStreamWriter =
+            OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE))
+
+        outputStreamWriter.write(data)
+        outputStreamWriter.close()
+
+    } catch (e: Exception) {
+        Timber.e("Cannot write file: %s", e.toString())
+    }
+}
+
+fun read(context: Context, fileName: String): String {
+    var str = ""
+
+    try {
+        val inputStream = context.openFileInput(fileName)
+
+        if (inputStream != null) {
+            val inputStreamReader = InputStreamReader(inputStream)
+            val bufferedReader = BufferedReader(inputStreamReader)
+
+            val stringBuilder = StringBuilder()
+
+            var line: String?
+
+            while (bufferedReader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
+
+            inputStream.close()
+            str = stringBuilder.toString()
+        }
+
+    } catch (e: FileNotFoundException) {
+        Timber.e("File not found: %s", e.toString())
+
+    } catch (e: IOException) {
+        Timber.e("Cannot read file: %s", e.toString())
+    }
+
+    return str
+}
+
+fun exists(context: Context, filename: String): Boolean {
+    val file = context.getFileStreamPath(filename)
+    return file.exists()
+}

@@ -37,6 +37,12 @@ class DestinationListActivity : AppCompatActivity() {
         }
 
         // Attach adapter
-        binding.recyclerView.adapter = DestinationAdapter(destinations)
+        binding.recyclerView.adapter =
+            DestinationAdapter(destinations) { position ->
+
+                destinations.removeAt(position)
+
+                binding.recyclerView.adapter?.notifyItemRemoved(position)
+            }
     }
 }

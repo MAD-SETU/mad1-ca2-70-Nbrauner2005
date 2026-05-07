@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 // Data model representing a travel destination
-// Parcelable allows objects to be written to and restored from a Parcel.
-// This is required in Android when passing complex objects like DestinationModel between activities through an Intent
+// Parcelable allows objects to be passed between activities using Intents
+
 data class DestinationModel(
     val name: String,
     val description: String,
@@ -16,15 +16,18 @@ data class DestinationModel(
     var imageUri: String = ""
 ) : Parcelable {
 
+    // Read data back from Parcel
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readFloat(),
         parcel.readString() ?: "",
-        parcel.readString() ?: ""
+        parcel.readString() ?: "",
+        parcel.readString() ?: "" // imageUri
     )
 
+    // Write data into Parcel
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(description)
@@ -33,12 +36,12 @@ data class DestinationModel(
         parcel.writeString(dateArrived)
         parcel.writeString(dateLeft)
         parcel.writeString(imageUri)
-        parcel.readString() ?: ""
     }
 
     override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<DestinationModel> {
+
         override fun createFromParcel(parcel: Parcel): DestinationModel {
             return DestinationModel(parcel)
         }
