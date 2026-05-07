@@ -4,4 +4,6 @@
     <string name="button_label">Show Greeting</string>
     <string name="greeting_text">Greetings from your all in one travel app, are you ready to explore the world?</string>
     <string name="select_destination_image">Select a destination image</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_map1">MapActivity1</string>
 </resources>

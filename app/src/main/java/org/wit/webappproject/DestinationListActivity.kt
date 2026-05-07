@@ -1,5 +1,6 @@
 package org.wit.webappproject
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,12 +46,11 @@ class DestinationListActivity : AppCompatActivity() {
 
         // Attach adapter
         binding.recyclerView.adapter =
-
             DestinationAdapter(
 
                 destinations,
 
-                // Delete functionality
+                // DELETE
                 { position ->
 
                     destinations.removeAt(position)
@@ -59,11 +59,29 @@ class DestinationListActivity : AppCompatActivity() {
                         ?.notifyItemRemoved(position)
                 },
 
-                // Empty edit callback
-                {},
+                // EDIT
+                { },
 
-                // Hide edit button on this screen
-                false
+                // HIDE EDIT BUTTON
+                false,
+
+                // OPEN MAP
+                { position ->
+
+                    val destination = destinations[position]
+
+                    val intent = Intent(
+                        this,
+                        MapActivity::class.java
+                    )
+
+                    intent.putExtra(
+                        "location",
+                        destination.location
+                    )
+
+                    startActivity(intent)
+                }
             )
     }
 }

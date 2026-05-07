@@ -13,7 +13,8 @@ class DestinationAdapter(
     private val destinations: MutableList<DestinationModel>,
     private val onDeleteClick: (Int) -> Unit,
     private val onEditClick: (Int) -> Unit,
-    private val showEditButton: Boolean = true
+    private val showEditButton: Boolean = true,
+    private val onCardClick: (Int) -> Unit
 ) : RecyclerView.Adapter<DestinationAdapter.MainHolder>() {
 
     class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -55,7 +56,6 @@ class DestinationAdapter(
 
         holder.cardDescription.text = destination.description
 
-        // Load image safely
         try {
 
             if (destination.imageUri.isNotEmpty()) {
@@ -72,13 +72,11 @@ class DestinationAdapter(
             )
         }
 
-        // Delete button
         holder.btnDelete.setOnClickListener {
 
             onDeleteClick(position)
         }
 
-        // Edit button visibility
         if (showEditButton) {
 
             holder.btnEdit.visibility = View.VISIBLE
@@ -91,6 +89,11 @@ class DestinationAdapter(
         } else {
 
             holder.btnEdit.visibility = View.GONE
+        }
+
+        holder.itemView.setOnClickListener {
+
+            onCardClick(position)
         }
     }
 }

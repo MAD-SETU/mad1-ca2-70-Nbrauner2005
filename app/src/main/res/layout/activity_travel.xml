@@ -1,198 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Layout for the screen where users can add a new destination and view there already saved destinations -->
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/addDestinationLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
-    android:padding="16dp"
-    tools:context=".TravelActivity">
+    android:background="#F5F5F5">
 
-<!-- ScrollView wraps the form to allow scrolling on smaller screens,
-     Ensures content is scrollable when keyboard is visible-->
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-<!-- Used as the content container inside scrollView -->
-        <LinearLayout
+        <!-- APP TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Travel Journal"
+            android:textColor="#1B1B1B"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- DESTINATION IMAGE -->
+
+        <ImageView
+            android:id="@+id/destinationPhoto"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/world_icon" />
+
+        <!-- IMAGE BUTTON -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:layout_marginTop="16dp"
+            android:text="Add Image"
+            app:cornerRadius="16dp" />
 
-<!-- Adding a screen title -->
-            <TextView
-                android:id="@+id/appTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Travel Journal"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/textPrimary"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"
-                android:layout_gravity="center"/>
+        <!-- LOCATION BUTTON -->
 
-<!-- ImageView for displaying the destination image,
-     Fixed size for a consistent UI -->
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/destinationPhoto"
-                android:layout_width="220dp"
-                android:layout_height="180dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="16dp"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                android:src="@drawable/world_icon"
-                android:contentDescription="Destination Photo"
-                app:shapeAppearanceOverlay="@style/roundedImage"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSetLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Set Location"
+            app:cornerRadius="16dp" />
 
-            <Button
-                android:id="@+id/btnAddImage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add Image"
-                android:layout_marginTop="8dp"
-                android:textAllCaps="false"
-                android:textStyle="bold"/>
+        <!-- LOCATION TEXT -->
 
-            <!-- EditText for destination name input -->
-            <EditText
+        <TextView
+            android:id="@+id/txtLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:text="No Location Selected"
+            android:textColor="#555555"
+            android:textSize="15sp" />
+
+        <!-- SECTION TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Destination Details"
+            android:textColor="#1B1B1B"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- DESTINATION NAME -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/destinationName"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="24dp"
-                android:hint="Enter Destination Name"
-                android:padding="8dp"
-                android:textColor="@color/textPrimary"
-                android:textSize="16sp"
-                android:backgroundTint="@color/colorPrimary"
-                android:maxLines="1"
-                android:inputType="text" />
+                android:layout_height="wrap_content"
+                android:hint="Destination Name" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-<!-- Multi-line EditText for destination description, -->
-            <EditText
+        <!-- DESCRIPTION -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/destinationDescription"
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
-                android:layout_marginTop="12dp"
-                android:hint="Short Description"
-                android:padding="8dp"
-                android:textColor="@color/textPrimary"
-                android:textSize="14sp"
-                android:backgroundTint="@color/colorPrimary"
+                android:layout_height="120dp"
                 android:gravity="top"
-                android:inputType="textMultiLine"
-                android:scrollbars="vertical" />
+                android:hint="Description"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-<!-- RatingBar for the user to rate the destination -->
-            <!-- numStars and stepSize define the rating scale -->
-            <RatingBar
-                android:id="@+id/destinationRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:numStars="5"
-                android:stepSize="1"
-                android:rating="0"
-                android:isIndicator="false" />
+        <!-- ACTIVITIES -->
 
-<!-- Multi-line EditText for destination activities -->
-            <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/destinationActivities"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="12dp"
-                android:hint="Things to do here"
-                android:padding="8dp"
-                android:textColor="@color/textPrimary"
-                android:textSize="14sp"
-                android:backgroundTint="@color/colorPrimary"
+                android:layout_height="100dp"
                 android:gravity="top"
-                android:inputType="textMultiLine"
-                android:scrollbars="vertical" />
+                android:hint="Things to do here"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-<!-- Date Arrived Label -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date Arrived"
-                android:textColor="@color/textPrimary"
-                android:layout_marginTop="16dp" />
+        <!-- SECTION TITLE -->
 
-<!-- Date Arrived input which opens the calendar -->
-            <EditText
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Travel Information"
+            android:textColor="#1B1B1B"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- RATING -->
+
+        <RatingBar
+            android:id="@+id/destinationRating"
+            style="@style/Widget.AppCompat.RatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:numStars="5"
+            android:stepSize="1.0" />
+
+        <!-- ARRIVAL DATE -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dateArrived"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Select arrival date"
-                android:focusable="false"
-                android:clickable="true"
-                android:padding="8dp"
-                android:textColor="@color/textPrimary"
-                android:backgroundTint="@color/colorPrimary" />
-
-<!-- Date left label -->
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date Left"
-                android:textColor="@color/textPrimary"
-                android:layout_marginTop="12dp" />
+                android:focusable="false"
+                android:hint="Arrival Date" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-<!-- Date left input , opens the calendar -->
-            <EditText
+        <!-- DEPARTURE DATE -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dateLeft"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Select departure date"
+                android:layout_height="wrap_content"
                 android:focusable="false"
-                android:clickable="true"
-                android:padding="8dp"
-                android:textColor="@color/textPrimary"
-                android:backgroundTint="@color/colorPrimary" />
+                android:hint="Departure Date" />
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- ADD DESTINATION BUTTON -->
 
-<!-- Button to submit the destination form -->
-            <Button
-                android:id="@+id/btnAddDestination"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Add Destination"
-                android:backgroundTint="@color/colorAccent"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:stateListAnimator="@null"
-                android:textAllCaps="false"
-                android:textStyle="bold"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Add Destination"
+            android:textSize="18sp"
+            app:cornerRadius="18dp" />
 
-            <Button
-                android:id="@+id/btnViewDestinations"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="View Saved Destinations"
-                android:backgroundTint="@color/colorPrimary"
-                android:textColor="@android:color/white" />
+        <!-- VIEW DESTINATIONS BUTTON -->
 
-            <androidx.recyclerview.widget.RecyclerView
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewDestinations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:text="View Saved Destinations"
+            app:cornerRadius="18dp" />
+
+        <!-- RECYCLERVIEW -->
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/destinationList"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
 
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

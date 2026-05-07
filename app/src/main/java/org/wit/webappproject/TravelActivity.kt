@@ -14,34 +14,30 @@ import org.wit.webappproject.databinding.ActivityTravelBinding
 import timber.log.Timber
 import java.util.Calendar
 
-// Screen where users add destinations and see them in a list
 class TravelActivity : AppCompatActivity() {
 
-    // Stores selected image URI
     private var selectedImageUri: Uri? = null
 
-    // ViewBinding object
+    private var selectedLocation = Location()
+
     private lateinit var binding: ActivityTravelBinding
 
-    // List storing all destinations
     private val destinations = ArrayList<DestinationModel>()
 
-    // RecyclerView adapter
     private lateinit var adapter: DestinationAdapter
 
-    // JSON file name
     private val JSON_FILE = "destinations.json"
 
-    // Gson object for JSON conversion
     private val gson = Gson()
 
-    // Image picker launcher
+    // IMAGE PICKER
     private val imagePicker =
-        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+        registerForActivityResult(
+            ActivityResultContracts.OpenDocument()
+        ) { uri: Uri? ->
 
             uri?.let {
 
-                // Keep image permission after app restart
                 contentResolver.takePersistableUriPermission(
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -49,27 +45,68 @@ class TravelActivity : AppCompatActivity() {
 
                 selectedImageUri = it
 
-                // Display selected image
                 binding.destinationPhoto.setImageURI(it)
             }
         }
 
+    // MAP RESULT
+    private val mapLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+
+            if (result.resultCode == RESULT_OK) {
+
+                result.data?.let {
+
+                    selectedLocation =
+                        if (
+                            android.os.Build.VERSION.SDK_INT >=
+                            android.os.Build.VERSION_CODES.TIRAMISU
+                        ) {
+
+                            it.getSerializableExtra(
+                                "location",
+                                Location::class.java
+                            ) ?: Location()
+
+                        } else {
+
+                            @Suppress("DEPRECATION")
+
+                            it.getSerializableExtra(
+                                "location"
+                            ) as? Location ?: Location()
+                        }
+
+                    binding.txtLocation.text =
+                        "Lat: ${selectedLocation.lat}, " +
+                                "Lng: ${selectedLocation.lng}"
+
+                    Toast.makeText(
+                        this,
+                        "Location Selected",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
-        // Inflate layout using ViewBinding
-        binding = ActivityTravelBinding.inflate(layoutInflater)
+        binding =
+            ActivityTravelBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
         Timber.plant(Timber.DebugTree())
 
-        Timber.i("TravelActivity started")
-
-        // RecyclerView setup
         binding.destinationList.layoutManager =
             LinearLayoutManager(this)
 
+        // ADAPTER
         adapter = DestinationAdapter(
 
             destinations,
@@ -95,8 +132,9 @@ class TravelActivity : AppCompatActivity() {
 
                 val destination = destinations[position]
 
-                // Fill form fields
-                binding.destinationName.setText(destination.name)
+                binding.destinationName.setText(
+                    destination.name
+                )
 
                 binding.destinationDescription.setText(
                     destination.description
@@ -117,7 +155,7 @@ class TravelActivity : AppCompatActivity() {
                     destination.dateLeft
                 )
 
-                // Restore image
+                // RESTORE IMAGE
                 if (destination.imageUri.isNotEmpty()) {
 
                     selectedImageUri =
@@ -128,7 +166,15 @@ class TravelActivity : AppCompatActivity() {
                     )
                 }
 
-                // Remove old item temporarily
+                // RESTORE LOCATION
+                selectedLocation =
+                    destination.location
+
+                binding.txtLocation.text =
+                    "Lat: ${selectedLocation.lat}, " +
+                            "Lng: ${selectedLocation.lng}"
+
+                // REMOVE OLD ITEM
                 destinations.removeAt(position)
 
                 saveDestinations()
@@ -137,22 +183,42 @@ class TravelActivity : AppCompatActivity() {
 
                 Toast.makeText(
                     this,
-                    "Edit the destination and press Add Destination to save changes",
+                    "Edit destination then press Add Destination",
                     Toast.LENGTH_LONG
                 ).show()
+            },
+
+            // SHOW EDIT BUTTON
+            true,
+
+            // OPEN SAVED MAP
+            { position ->
+
+                val destination =
+                    destinations[position]
+
+                val intent =
+                    Intent(this, MapActivity::class.java)
+
+                intent.putExtra(
+                    "location",
+                    destination.location
+                )
+
+                startActivity(intent)
             }
         )
 
         binding.destinationList.adapter = adapter
 
-        // Load saved destinations
+        // LOAD SAVED DESTINATIONS
         loadDestinations()
 
         adapter.notifyDataSetChanged()
 
         val calendar = Calendar.getInstance()
 
-        // Arrival Date Picker
+        // ARRIVAL DATE
         binding.dateArrived.setOnClickListener {
 
             val datePicker = DatePickerDialog(
@@ -171,7 +237,7 @@ class TravelActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // Departure Date Picker
+        // DEPARTURE DATE
         binding.dateLeft.setOnClickListener {
 
             val datePicker = DatePickerDialog(
@@ -190,17 +256,35 @@ class TravelActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // Open image picker
+        // IMAGE BUTTON
         binding.btnAddImage.setOnClickListener {
 
             showImagePicker()
         }
 
-        // Open saved destinations screen
+        // LOCATION BUTTON
+        binding.btnSetLocation.setOnClickListener {
+
+            val intent =
+                Intent(this, MapActivity::class.java)
+
+            // IMPORTANT
+            intent.putExtra(
+                "selecting",
+                true
+            )
+
+            mapLauncher.launch(intent)
+        }
+
+        // VIEW SAVED DESTINATIONS
         binding.btnViewDestinations.setOnClickListener {
 
             val intent =
-                Intent(this, DestinationListActivity::class.java)
+                Intent(
+                    this,
+                    DestinationListActivity::class.java
+                )
 
             intent.putParcelableArrayListExtra(
                 "userDestinations",
@@ -210,11 +294,13 @@ class TravelActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Add destination button
+        // ADD DESTINATION
         binding.btnAddDestination.setOnClickListener {
 
             val name =
-                binding.destinationName.text.toString().trim()
+                binding.destinationName.text
+                    .toString()
+                    .trim()
 
             val description =
                 binding.destinationDescription.text
@@ -235,7 +321,7 @@ class TravelActivity : AppCompatActivity() {
             val left =
                 binding.dateLeft.text.toString()
 
-            // Validation check
+            // VALIDATION
             if (name.isEmpty()) {
 
                 Toast.makeText(
@@ -247,7 +333,13 @@ class TravelActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Create destination object
+            Toast.makeText(
+                this,
+                "Saving ${selectedLocation.lat}, ${selectedLocation.lng}",
+                Toast.LENGTH_LONG
+            ).show()
+
+            // CREATE DESTINATION
             val destination = DestinationModel(
                 name,
                 description,
@@ -255,39 +347,44 @@ class TravelActivity : AppCompatActivity() {
                 rating,
                 arrived,
                 left,
-                selectedImageUri?.toString() ?: ""
+                selectedImageUri?.toString() ?: "",
+                selectedLocation
             )
 
-            // Add destination
+            // ADD TO LIST
             destinations.add(destination)
 
-            // Save destinations
             saveDestinations()
 
-            // Refresh RecyclerView
             adapter.notifyDataSetChanged()
 
             Timber.i("Destination added: $destination")
 
-            // Clear form fields
-            binding.destinationName.text.clear()
+            // CLEAR FORM
+            binding.destinationName.text?.clear()
 
-            binding.destinationDescription.text.clear()
+            binding.destinationDescription.text?.clear()
 
-            binding.destinationActivities.text.clear()
+            binding.destinationActivities.text?.clear()
 
             binding.destinationRating.rating = 0f
 
-            binding.dateArrived.text.clear()
+            binding.dateArrived.text?.clear()
 
-            binding.dateLeft.text.clear()
+            binding.dateLeft.text?.clear()
 
-            // Reset image
+            // RESET IMAGE
             selectedImageUri = null
 
             binding.destinationPhoto.setImageResource(
                 R.drawable.world_icon
             )
+
+            // RESET LOCATION
+            selectedLocation = Location()
+
+            binding.txtLocation.text =
+                "No Location Selected"
 
             Toast.makeText(
                 this,
@@ -297,27 +394,29 @@ class TravelActivity : AppCompatActivity() {
         }
     }
 
-    // Opens image picker
+    // IMAGE PICKER
     private fun showImagePicker() {
 
         imagePicker.launch(arrayOf("image/*"))
     }
 
-    // Save destinations to JSON
+    // SAVE JSON
     private fun saveDestinations() {
 
         val type =
-            object : TypeToken<ArrayList<DestinationModel>>() {}.type
+            object : TypeToken<
+                    ArrayList<DestinationModel>
+                    >() {}.type
 
         val jsonString =
             gson.toJson(destinations, type)
 
         write(this, JSON_FILE, jsonString)
 
-        Timber.i("Destinations saved to JSON")
+        Timber.i("Destinations saved")
     }
 
-    // Load destinations from JSON
+    // LOAD JSON
     private fun loadDestinations() {
 
         try {
@@ -327,10 +426,10 @@ class TravelActivity : AppCompatActivity() {
                 val jsonString =
                     read(this, JSON_FILE)
 
-                Timber.i("JSON Loaded: $jsonString")
-
                 val type =
-                    object : TypeToken<ArrayList<DestinationModel>>() {}.type
+                    object : TypeToken<
+                            ArrayList<DestinationModel>
+                            >() {}.type
 
                 val loadedDestinations:
                         ArrayList<DestinationModel> =
@@ -339,9 +438,11 @@ class TravelActivity : AppCompatActivity() {
 
                 destinations.clear()
 
-                destinations.addAll(loadedDestinations)
+                destinations.addAll(
+                    loadedDestinations
+                )
 
-                Timber.i("Destinations loaded successfully")
+                Timber.i("Destinations loaded")
             }
 
         } catch (e: Exception) {
@@ -350,7 +451,7 @@ class TravelActivity : AppCompatActivity() {
 
             Toast.makeText(
                 this,
-                "Error loading saved destinations",
+                "Error loading destinations",
                 Toast.LENGTH_LONG
             ).show()
         }
